@@ -8,6 +8,25 @@ import (
 
 // SetupRoutes initializes all application routes
 func SetupRoutes(app *fiber.App) {
+	// Serve static files from the "public" directory
+	app.Static("/", "./public")
+
+	// Serve static files from the "docs" directory
+	app.Static("/docs", "./docs")
+
+	// Welcome screen
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendFile("public/welcome.html")
+	})
+
+	// Ping route
+	app.Get("/ping", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{"message": "pong"})
+	})
+
+	// Generate PDF route
+	app.Get("/generate-pdf", controllers.GeneratePDF)
+
 	api := app.Group("/api/v1")
 
 	// Setup all route groups

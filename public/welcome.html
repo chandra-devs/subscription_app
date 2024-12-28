@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clifford: '#da373d',
+          }
+        }
+      }
+    }
+  </script>
+  <title>Welcome to Subscription Management API</title>
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <div class="container mx-auto p-4">
+    <h1 class="text-4xl font-bold text-clifford mb-4">Welcome to Subscription Management API</h1>
+    <p class="text-lg mb-4">This API allows you to manage subscriptions, users, and plans efficiently.</p>
+    <h2 class="text-2xl font-semibold mb-2">Available Routes</h2>
+    <ul class="list-disc list-inside mb-4">
+      <li><strong>GET /ping</strong> - Check the API status</li>
+      <li><strong>POST /api/v1/auth/register</strong> - Register a new user</li>
+      <li><strong>POST /api/v1/auth/login</strong> - Login a user</li>
+      <li><strong>GET /api/v1/users</strong> - Get all users</li>
+      <li><strong>GET /api/v1/users/:id</strong> - Get a specific user</li>
+      <li><strong>POST /api/v1/users</strong> - Create a new user</li>
+      <li><strong>PUT /api/v1/users/:id</strong> - Update a user</li>
+      <li><strong>DELETE /api/v1/users/:id</strong> - Delete a user</li>
+      <li><strong>GET /api/v1/subscriptions/user/:userId</strong> - Get subscriptions for a user</li>
+      <li><strong>POST /api/v1/subscriptions/subscribe</strong> - Subscribe a user to a plan</li>
+      <li><strong>POST /api/v1/subscriptions</strong> - Create a new subscription</li>
+      <li><strong>GET /api/v1/plans</strong> - Get all plans</li>
+      <li><strong>GET /api/v1/plans/:id</strong> - Get a specific plan</li>
+      <li><strong>POST /api/v1/plans</strong> - Create a new plan</li>
+      <li><strong>PUT /api/v1/plans/:id</strong> - Update a plan</li>
+      <li><strong>DELETE /api/v1/plans/:id</strong> - Delete a plan</li>
+    </ul>
+    <p class="text-lg">For more information, please refer to the <a href="/docs/api.md" class="text-blue-500 underline">API documentation</a> or <a href="/api.pdf" class="text-blue-500 underline">download the PDF</a>.</p>
+  </div>
+</body>
+</html>
