@@ -1,0 +1,41 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=5432
+      - JWT_SECRET=your-secret-key
+    depends_on:
+      - postgres
+    networks:
+      - subscription-network
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=home1102110
+      - POSTGRES_DB=subscription_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - subscription-network
+    restart: unless-stopped
+
+networks:
+  subscription-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

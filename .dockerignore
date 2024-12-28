@@ -1,0 +1,10 @@
+# .dockerignore
+.git
+.gitignore
+.env
+*.md
+/docs
+.docker
+.vscode
+*.log
+tmp/
