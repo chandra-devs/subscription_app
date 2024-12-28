@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/chandra-devs/subscription_app/config"
 	"github.com/chandra-devs/subscription_app/controllers"
@@ -19,6 +20,9 @@ func main() {
 		ReadBufferSize:  16 * 1024,
 		WriteBufferSize: 16 * 1024,
 		BodyLimit:       10 * 1024 * 1024,
+		ReadTimeout:     15 * time.Second,
+		WriteTimeout:    15 * time.Second,
+		IdleTimeout:     60 * time.Second,
 	})
 
 	// Configure CORS

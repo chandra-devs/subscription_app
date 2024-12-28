@@ -9,11 +9,11 @@ import (
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var DB *gorm.DB
 
-// ConnectDB establishes database connection with proper connection pooling
 func ConnectDB() error {
 	err := godotenv.Load()
 	if err != nil {
@@ -28,28 +28,38 @@ func ConnectDB() error {
 		os.Getenv("DB_PORT"),
 	)
 
-	// Open connection to database
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
-		PrepareStmt: true, // Enables statement cache
-	})
+	// Configure GORM logger
+	gormLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold:             time.Second,
+			LogLevel:                  logger.Info,
+			IgnoreRecordNotFoundError: true,
+			Colorful:                  true,
+		},
+	)
+
+	// Configure database connection with connection pooling
+	gormConfig := &gorm.Config{
+		Logger:      gormLogger,
+		PrepareStmt: true, // Cache prepared statements
+	}
+
+	DB, err = gorm.Open(postgres.Open(dsn), gormConfig)
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %v", err)
 	}
 
-	// Get generic database object sql.DB to use its functions
+	// Configure connection pool
 	sqlDB, err := DB.DB()
 	if err != nil {
 		return fmt.Errorf("failed to get database instance: %v", err)
 	}
 
-	// SetMaxIdleConns sets the maximum number of connections in the idle connection pool
-	sqlDB.SetMaxIdleConns(10)
-
-	// SetMaxOpenConns sets the maximum number of open connections to the database
-	sqlDB.SetMaxOpenConns(100)
-
-	// SetConnMaxLifetime sets the maximum amount of time a connection may be reused
-	sqlDB.SetConnMaxLifetime(time.Hour)
+	// Set connection pool settings
+	sqlDB.SetMaxIdleConns(10)           // Maximum number of idle connections
+	sqlDB.SetMaxOpenConns(100)          // Maximum number of open connections
+	sqlDB.SetConnMaxLifetime(time.Hour) // Maximum lifetime of connections
 
 	log.Println("Connected to database successfully!")
 	return nil
@@ -62,10 +72,7 @@ func CloseDB() error {
 		if err != nil {
 			return fmt.Errorf("failed to get database instance: %v", err)
 		}
-		if err := sqlDB.Close(); err != nil {
-			return fmt.Errorf("failed to close database connection: %v", err)
-		}
-		log.Println("Database connection closed successfully")
+		return sqlDB.Close()
 	}
 	return nil
 }

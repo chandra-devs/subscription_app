@@ -30,8 +30,31 @@ func CreateSubscription(c *fiber.Ctx) error {
 }
 
 func GetSubscriptions(c *fiber.Ctx) error {
+	page := c.QueryInt("page", 1)
+	limit := c.QueryInt("limit", 50)
+	if limit > 100 {
+		limit = 100 // Prevent memory exhaustion from large queries
+	}
+
+	offset := (page - 1) * limit
+	var total int64
 	var subscriptions []models.Subscription
-	if result := config.DB.Find(&subscriptions); result.Error != nil {
+
+	// Get total count with a separate query
+	if err := config.DB.Model(&models.Subscription{}).Count(&total).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Failed to fetch subscriptions count",
+		})
+	}
+
+	// Get paginated data
+	if result := config.DB.
+		Preload("User"). // Use preload instead of eager loading
+		Preload("Plan"). // Preload related data
+		Limit(limit).
+		Offset(offset).
+		Find(&subscriptions); result.Error != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Failed to fetch subscriptions",
@@ -40,7 +63,15 @@ func GetSubscriptions(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{
 		"status": "success",
-		"data":   subscriptions,
+		"data": fiber.Map{
+			"subscriptions": subscriptions,
+			"pagination": fiber.Map{
+				"current_page": page,
+				"total_pages":  (total + int64(limit) - 1) / int64(limit),
+				"total_items":  total,
+				"per_page":     limit,
+			},
+		},
 	})
 }
 
