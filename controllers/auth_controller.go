@@ -2,6 +2,7 @@
 package controllers
 
 import (
+	"errors"
 	"time"
 
 	"github.com/chandra-devs/subscription_app/config"
@@ -114,7 +115,17 @@ func Login(c *fiber.Ctx) error {
 	return c.JSON(tokens)
 }
 
+var tokenGenerationLimit = make(chan struct{}, 1000) // Limit concurrent token generations
+
 func generateTokens(userID uint) (*TokenResponse, error) {
+	// Limit concurrent token generations
+	select {
+	case tokenGenerationLimit <- struct{}{}:
+		defer func() { <-tokenGenerationLimit }()
+	default:
+		return nil, errors.New("token generation limit reached")
+	}
+
 	// Access token
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": userID,

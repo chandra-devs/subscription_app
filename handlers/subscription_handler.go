@@ -66,7 +66,8 @@ func CreatePlan(c *fiber.Ctx) error {
 
 func GetPlans(c *fiber.Ctx) error {
 	var plans []models.Plan
-	if err := config.DB.Find(&plans).Error; err != nil {
+	limit := 100 // Or use pagination parameters from request
+	if err := config.DB.Limit(limit).Find(&plans).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"error":   "Could not retrieve plans",

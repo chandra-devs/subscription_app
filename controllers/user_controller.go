@@ -7,11 +7,25 @@ import (
 )
 
 func GetUsers(c *fiber.Ctx) error {
+	page := c.QueryInt("page", 1)
+	limit := c.QueryInt("limit", 50)
+
 	var users []models.User
-	if result := config.DB.Preload("Subscriptions").Find(&users); result.Error != nil {
+	offset := (page - 1) * limit
+
+	if result := config.DB.
+		Preload("Subscriptions").
+		Limit(limit).
+		Offset(offset).
+		Find(&users); result.Error != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to fetch users"})
 	}
-	return c.JSON(users)
+
+	return c.JSON(fiber.Map{
+		"page":  page,
+		"limit": limit,
+		"data":  users,
+	})
 }
 
 func GetUser(c *fiber.Ctx) error {
