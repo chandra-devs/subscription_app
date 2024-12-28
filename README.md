@@ -27,6 +27,7 @@ A robust subscription management system built with Go, featuring user authentica
 - **ORM**: [GORM](https://gorm.io/)
 - **Authentication**: JWT (JSON Web Tokens)
 - **Configuration**: Environment variables via godotenv
+- **Containerization**: Docker and Docker Compose
 - **API Documentation**: Markdown
 
 ## 📋 Prerequisites
@@ -34,8 +35,22 @@ A robust subscription management system built with Go, featuring user authentica
 - Go 1.23.4 or higher
 - PostgreSQL 12 or higher
 - Git
+- Docker and Docker Compose (optional)
 
-## 🔧 Installation
+## 🚀 Getting Started
+
+You can run this application either using Docker or with a manual setup.
+
+### 🐳 Docker Setup
+
+For running with Docker, see our [Docker Setup Guide](docker-readme.md) which includes:
+- Quick start instructions
+- Development workflow
+- Production deployment considerations
+- Container management
+- Environment configuration
+
+### 💻 Manual Setup
 
 1. **Clone the repository**
    ```bash
@@ -213,4 +228,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Fiber](https://github.com/gofiber/fiber)
 - [GORM](https://gorm.io/)
 - [JWT-Go](https://github.com/golang-jwt/jwt)
-```
