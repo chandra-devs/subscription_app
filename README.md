@@ -200,16 +200,17 @@ CREATE TABLE subscriptions (
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 👥 Authors
 
 - Chandra Devs - [GitHub](https://github.com/chandra-devs)
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
 - [Fiber](https://github.com/gofiber/fiber)
 - [GORM](https://gorm.io/)
 - [JWT-Go](https://github.com/golang-jwt/jwt)
+```
