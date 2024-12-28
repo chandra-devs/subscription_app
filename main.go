@@ -1,15 +1,28 @@
 package main
 
 import (
+	"log"
+
+	"github.com/chandra-devs/subscription_app/config"
+	"github.com/chandra-devs/subscription_app/routes"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
 	app := fiber.New()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Welcome to the Subscription App!")
-	})
+	// Configure CORS
+	app.Use(cors.New())
 
-	app.Listen(":3000")
+	// Connect to database
+	config.ConnectDB()
+	config.InitJWTConfig()
+
+	// Setup routes
+	api := app.Group("/api/v1")
+	routes.SetupAuthRoutes(api)
+	routes.SetupSubscriptionRoutes(api)
+
+	log.Fatal(app.Listen(":3000"))
 }
